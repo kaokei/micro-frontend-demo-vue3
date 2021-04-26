@@ -1,12 +1,30 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <a href="javascript:void(0);" @click="router.pushTopState('/')">Home</a> |
+    <a href="javascript:void(0);" @click="router.pushTopState('/about')">About</a>
   </div>
-  <router-view/>
+  <router-view />
 </template>
 
+<script>
+import { useRouter } from 'vue-router';
+export default {
+  setup() {
+    const router = useRouter();
+
+    return {
+      router,
+    };
+  },
+};
+</script>
+
 <style>
+html,
+body {
+  height: auto;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
