@@ -1,16 +1,22 @@
-import PostBridge from './postBridge';
+import { PostBridge } from '@kaokei/post-bridge';
 import router from '../router';
 
 import { RouteLocationRaw } from 'vue-router';
 import { message as antdMessage } from 'ant-design-vue';
 
+const appName = 'demo-vue3';
+
 PostBridge.registerMethods({
-  pushState(path = '') {
+  pushState(route = {}) {
+    const path = route.path;
+    console.log('pushState path :>> ', path);
     // 这里需要/作为前缀
     const newPath = path[0] === '/' ? path : '/' + path;
     router.push(newPath);
   },
-  replaceState(path = '') {
+  replaceState(route = {}) {
+    const path = route.path;
+    console.log('replaceState path :>> ', path);
     // 这里需要/作为前缀
     const newPath = path[0] === '/' ? path : '/' + path;
     router.replace(newPath);
@@ -59,8 +65,15 @@ router.pushTopState = to => {
   if (window.top === window.self) {
     return router.push(to);
   } else {
+    const route = router.resolve(to);
+    console.log('resolve route :>> ', route);
     return Promise.resolve().then(
-      () => postBridge && postBridge.call('pushState', to)
+      () =>
+        postBridge &&
+        postBridge.call('pushState', {
+          appName,
+          path: route.fullPath,
+        })
     );
   }
 };
@@ -69,8 +82,14 @@ router.replaceTopState = to => {
   if (window.top === window.self) {
     return router.replace(to);
   } else {
+    const route = router.resolve(to);
     return Promise.resolve().then(
-      () => postBridge && postBridge.call('replaceState', to)
+      () =>
+        postBridge &&
+        postBridge.call('replaceState', {
+          appName,
+          path: route.fullPath,
+        })
     );
   }
 };
