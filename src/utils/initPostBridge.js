@@ -72,7 +72,7 @@ router.pushTopState = to => {
         postBridge &&
         postBridge.call('pushState', {
           appName,
-          path: route.fullPath,
+          path: route.href,
         })
     );
   }
@@ -88,7 +88,7 @@ router.replaceTopState = to => {
         postBridge &&
         postBridge.call('replaceState', {
           appName,
-          path: route.fullPath,
+          path: route.href,
         })
     );
   }
