@@ -62,7 +62,10 @@ router.pushTopState = to => {
         postBridge.call('pushState', {
           appName,
           path: route.href,
-        })
+        }),
+      err => {
+        console.error('router.pushTopState: ', err);
+      }
     );
   }
 };
@@ -78,7 +81,10 @@ router.replaceTopState = to => {
         postBridge.call('replaceState', {
           appName,
           path: route.href,
-        })
+        }),
+      err => {
+        console.error('router.replaceTopState: ', err);
+      }
     );
   }
 };
