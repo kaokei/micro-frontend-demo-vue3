@@ -92,3 +92,28 @@ router.replaceTopState = to => {
 router.afterEach(() => {
   postBridge && postBridge.call('resetScroll');
 });
+
+function getPositive(num) {
+  return num > 0 ? num : 0;
+}
+
+export function prepareIframe() {
+  return postBridge.request('fixIframe').then(rect => {
+    console.log('rect :>> ', rect);
+    const realBottom = rect.viewHeight - rect.bottom;
+    const realRight = rect.viewWidth - rect.right;
+    const padding = `${getPositive(rect.top)}px ${getPositive(
+      realRight
+    )}px ${getPositive(realBottom)}px ${getPositive(rect.left)}px`;
+    console.log('padding :>> ', padding);
+    document.body.style.padding = padding;
+    document.body.style.backgroundColor = 'transparent';
+  });
+}
+
+export function resetIframe() {
+  return postBridge.request('unfixIframe').then(() => {
+    document.body.style.padding = '0px';
+    document.body.style.backgroundColor = '#fff';
+  });
+}
