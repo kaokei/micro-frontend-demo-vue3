@@ -1,28 +1,18 @@
 import { PostBridge } from '@kaokei/post-bridge';
 import router from '../router';
 
-import { RouteLocationRaw } from 'vue-router';
 import { message as antdMessage } from 'ant-design-vue';
 
 const appName = 'demo-vue3';
 
 PostBridge.registerMethods({
-  pushState(route = {}) {
-    const path = route.path;
-    console.log('pushState path :>> ', path);
-    // 这里需要/作为前缀
-    const newPath = path[0] === '/' ? path : '/' + path;
-    router.push(newPath);
-  },
   replaceState(route = {}) {
     const path = route.path;
-    console.log('replaceState path :>> ', path);
     // 这里需要/作为前缀
     const newPath = path[0] === '/' ? path : '/' + path;
-    router.replace(newPath);
-  },
-  go(args) {
-    router.go(args);
+    if (router.currentRoute.value.path !== newPath) {
+      router.replace(newPath);
+    }
   },
 });
 
@@ -66,8 +56,7 @@ router.pushTopState = to => {
     return router.push(to);
   } else {
     const route = router.resolve(to);
-    console.log('resolve route :>> ', route);
-    return Promise.resolve().then(
+    return router.replace(to).then(
       () =>
         postBridge &&
         postBridge.call('pushState', {
@@ -83,7 +72,7 @@ router.replaceTopState = to => {
     return router.replace(to);
   } else {
     const route = router.resolve(to);
-    return Promise.resolve().then(
+    return router.replace(to).then(
       () =>
         postBridge &&
         postBridge.call('replaceState', {
